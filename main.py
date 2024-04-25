@@ -53,6 +53,11 @@ def parse_args():
         help="AutoModel to use, it can be causal or seq2seq",
     )
     parser.add_argument(
+        "--tokenizer",
+        default=None,
+        help=points to separate tokenizer, optional,
+    )
+    parser.add_argument(
         "--peft_model",
         type=str,
         default=None,
@@ -292,6 +297,8 @@ def main():
                 else:
                     model_kwargs["device_map"] = "auto"
                     print("Loading model in auto mode")
+        if args.tokenizer is not None:
+            model_kwargs["tokenizer"] = args.tokenizer
 
         if args.modeltype == "causal":
             model = AutoModelForCausalLM.from_pretrained(
