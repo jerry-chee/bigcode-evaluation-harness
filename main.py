@@ -18,10 +18,6 @@ from bigcode_eval.arguments import EvalArguments
 from bigcode_eval.evaluator import Evaluator
 from bigcode_eval.tasks import ALL_TASKS
 
-import sparseml.core.session as session_manager
-from sparseml.core.framework import Framework
-from sparseml.pytorch.model_load.helpers import reload_model_state
-
 class MultiChoice:
     def __init__(self, choices):
         self.choices = choices
@@ -55,7 +51,7 @@ def parse_args():
     parser.add_argument(
         "--tokenizer",
         default=None,
-        help=points to separate tokenizer, optional,
+        help="points to separate tokenizer, optional",
     )
     parser.add_argument(
         "--peft_model",
@@ -314,6 +310,10 @@ def main():
                 **model_kwargs,
             )
         elif args.modeltype == "nm":
+            import sparseml.core.session as session_manager
+            from sparseml.core.framework import Framework
+            from sparseml.pytorch.model_load.helpers import reload_model_state
+
             model = AutoModelForCausalLM.from_pretrained(
                 args.model,
                 local_files_only=True,
