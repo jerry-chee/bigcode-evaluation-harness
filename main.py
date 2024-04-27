@@ -293,8 +293,6 @@ def main():
                 else:
                     model_kwargs["device_map"] = "auto"
                     print("Loading model in auto mode")
-        if args.tokenizer is not None:
-            model_kwargs["tokenizer"] = args.tokenizer
 
         if args.modeltype == "causal":
             model = AutoModelForCausalLM.from_pretrained(
@@ -361,10 +359,14 @@ def main():
             model.merge_and_unload()
             print("Merge complete.")
 
+        tokenizer_model = args.model
+        if args.tokenizer is not None:
+            tokenizer_model = args.tokenizer
         if args.left_padding:
             # left padding is required for some models like chatglm3-6b
             tokenizer = AutoTokenizer.from_pretrained(
-                args.model,
+                # args.model,
+                tokenizer_model,
                 revision=args.revision,
                 trust_remote_code=args.trust_remote_code,
                 use_auth_token=args.use_auth_token,
@@ -373,7 +375,8 @@ def main():
         else:
             # used by default for most models
             tokenizer = AutoTokenizer.from_pretrained(
-                args.model,
+                # args.model,
+                tokenizer_model,
                 revision=args.revision,
                 trust_remote_code=args.trust_remote_code,
                 use_auth_token=args.use_auth_token,
